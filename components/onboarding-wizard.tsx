@@ -63,7 +63,7 @@ export default function OnboardingWizard() {
     startTransition(async () => {
       try {
         // Directly call the API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-organization/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-organization`, {
           method: "POST",
           body: JSON.stringify(requestData),
           headers: {
