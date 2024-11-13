@@ -14,7 +14,7 @@ const SuccessPage = () => {
       if (parts.length > 2) {
         setSubdomain(parts[0]); // Set the first part as subdomain
       } else {
-        setSubdomain(null); // No subdomain found
+        setSubdomain(null); // No subdomain has been found
       }
     }
   }, []);
