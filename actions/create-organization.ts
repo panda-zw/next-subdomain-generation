@@ -12,6 +12,7 @@ export const createOrganization = async (values: any) => {
   });
 
   if (!response.ok) {
+    console.log(response.body)
     throw new Error(`Error: ${response.statusText}`)
   }
 
