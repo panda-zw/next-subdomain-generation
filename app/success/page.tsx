@@ -1,4 +1,4 @@
-// app/success/page.tsx (or pages/success.tsx if using Pages Router)
+"use client";
 import { useEffect, useState } from 'react';
 
 const SuccessPage = () => {
