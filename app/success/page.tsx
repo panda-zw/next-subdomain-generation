@@ -14,7 +14,7 @@ const SuccessPage = () => {
           configured.
         </p>
       ) : (
-        <p>No subdomain detected because of window.</p>
+        <p>No subdomain detected because of window. d:{currentUrl}</p>
       )}
     </div>
   );
