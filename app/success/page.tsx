@@ -3,7 +3,7 @@
 import { useUrl } from "nextjs-current-url";
 
 const SuccessPage = () => {
-  const { href: currentUrl, pathname } = useUrl() ?? {};
+  const { href: currentUrl } = useUrl() ?? {};
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
