@@ -23,15 +23,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { createOrganization } from "@/actions/create-organization";
+import { generateSlug } from "@/lib/utils";
 
 export default function OnboardingWizard() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    organizationName: "",
+    name: "",
+    subdomain: "",
     companySize: "",
     role: "",
   });
@@ -50,6 +53,13 @@ export default function OnboardingWizard() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Generate the subdomain from the company name
+    const subdomain = generateSlug(formData.name);
+
+    // Update the formData to include the subdomain
+    const requestData = { ...formData, subdomain };
+
     console.log("Form submitted:", formData);
     // Use startTransition for Server Action to avoid blocking UI
     startTransition(async () => {
@@ -59,7 +69,7 @@ export default function OnboardingWizard() {
 
         // Redirect to the success page on the new subdomain
         router.push(
-          `https://${subdomain}.${process.env.NEXT_PUBLIC_DOMAIN}/success?subdomain=${subdomain}`
+          `https://${subdomain}.${process.env.NEXT_PUBLIC_DOMAIN}/success`
         );
       } catch (error) {
         console.error("Error creating organization:", error);
@@ -80,12 +90,22 @@ export default function OnboardingWizard() {
           {step === 1 && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">First Name</Label>
                 <Input
-                  id="name"
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) => updateFormData('name', e.target.value)}
+                  id="first_name"
+                  placeholder="John"
+                  value={formData.first_name}
+                  onChange={(e) => updateFormData('first_name', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Last Name</Label>
+                <Input
+                  id="last_name"
+                  placeholder="Doe"
+                  value={formData.last_name}
+                  onChange={(e) => updateFormData('last_name', e.target.value)}
                   required
                 />
               </div>
@@ -109,10 +129,10 @@ export default function OnboardingWizard() {
               <div className="space-y-2">
                 <Label htmlFor="organizationName">Organization Name</Label>
                 <Input
-                  id="organizationName"
+                  id="name"
                   placeholder="Acme Inc."
-                  value={formData.organizationName}
-                  onChange={(e) => updateFormData('organizationName', e.target.value)}
+                  value={formData.name}
+                  onChange={(e) => updateFormData('name', e.target.value)}
                   required
                 />
               </div>
@@ -178,13 +198,14 @@ export default function OnboardingWizard() {
                 <div className="p-6 space-y-4">
                   <div className="space-y-2">
                     <h4 className="font-bold">Personal Information</h4>
-                    <p className="text-sm">Name: {formData.name}</p>
+                    <p className="text-sm">First Name: {formData.first_name}</p>
+                    <p className="text-sm">Last Name: {formData.last_name}</p>
                     <p className="text-sm">Email: {formData.email}</p>
                   </div>
                   <Separator />
                   <div className="space-y-2">
                     <h4 className="font-bold">Organization Details</h4>
-                    <p className="text-sm">Organization: {formData.organizationName}</p>
+                    <p className="text-sm">Organization: {formData.name}</p>
                     <p className="text-sm">Company Size: {formData.companySize}</p>
                   </div>
                   <Separator />
