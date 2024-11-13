@@ -1,39 +1,31 @@
 // middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis';
 import ignoredDomains from './ignored-domains';
 
-// Initialize Redis connection
-const redis = new Redis(process.env.REDIS_URL!);
+// Initialize Upstash Redis with environment variables
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
+});
 
 export async function middleware(req: NextRequest) {
   const hostname = req.nextUrl.hostname;
   const subdomain = hostname.split('.')[0];
 
-  // Check if the hostname is in the ignored domains list
+  // Skip ignored domains
   if (ignoredDomains.includes(hostname)) {
-    // Allow requests to proceed without further processing
     return NextResponse.next();
   }
 
-  // Define the main domain (e.g., oono.store)
-  const mainDomain = process.env.MAIN_DOMAIN || 'oono.store';
+  // Check if subdomain exists in Redis
+  const isValidSubdomain = await redis.sismember('valid_subdomains', subdomain);
 
-  // Process only if it's a subdomain other than 'www' or the main domain
-  if (subdomain && subdomain !== 'www' && subdomain !== mainDomain) {
-    const isValidSubdomain = await redis.sismember('valid_subdomains', subdomain);
-
-    // Redirect invalid subdomains to the 404 page
-    if (!isValidSubdomain) {
-      return NextResponse.redirect(new URL('/404', req.url));
-    }
-
-    // Rewrite valid subdomains to the custom success page
-    const successUrl = new URL(`/success?subdomain=${subdomain}`, req.url);
-    return NextResponse.rewrite(successUrl);
+  if (!isValidSubdomain && subdomain !== 'www') {
+    return NextResponse.redirect(new URL('/404', req.url));
   }
 
-  // Continue with main app processing for default and valid subdomains
-  return NextResponse.next();
+  const successUrl = new URL(`/success?subdomain=${subdomain}`, req.url);
+  return NextResponse.rewrite(successUrl);
 }
