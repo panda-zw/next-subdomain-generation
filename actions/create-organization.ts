@@ -7,6 +7,7 @@ export const createOrganization = async (values: any) => {
     body: JSON.stringify(values),
     headers: {
       "Content-Type": "application/json",
+      "accept": "application/json",
     },
   });
 
