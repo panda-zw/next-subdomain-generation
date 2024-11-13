@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 const SuccessPage = () => {
   const [subdomain, setSubdomain] = useState<string | null>(null);
+  const url = window.location.hostname;
 
   useEffect(() => {
     // Check if we're in the browser environment
@@ -20,7 +21,7 @@ const SuccessPage = () => {
           configured.
         </p>
       ) : (
-        <p> Domain <strong>{window.location.hostname}</strong> is successfully
+        <p> Domain <strong>{url}</strong> is successfully
           configured.</p>
       )}
     </div>
