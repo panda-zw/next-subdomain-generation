@@ -76,6 +76,7 @@ export default function OnboardingWizard() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
+          {/* Form steps */}
           {step === 1 && (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -84,7 +85,7 @@ export default function OnboardingWizard() {
                   id="name"
                   placeholder="John Doe"
                   value={formData.name}
-                  onChange={(e) => updateFormData("name", e.target.value)}
+                  onChange={(e) => updateFormData('name', e.target.value)}
                   required
                 />
               </div>
@@ -95,13 +96,14 @@ export default function OnboardingWizard() {
                   type="email"
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => updateFormData("email", e.target.value)}
+                  onChange={(e) => updateFormData('email', e.target.value)}
                   required
                 />
               </div>
             </div>
           )}
 
+          {/* Step 2: Organization Name and Company Size */}
           {step === 2 && (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -110,9 +112,7 @@ export default function OnboardingWizard() {
                   id="organizationName"
                   placeholder="Acme Inc."
                   value={formData.organizationName}
-                  onChange={(e) =>
-                    updateFormData("organizationName", e.target.value)
-                  }
+                  onChange={(e) => updateFormData('organizationName', e.target.value)}
                   required
                 />
               </div>
@@ -120,11 +120,10 @@ export default function OnboardingWizard() {
                 <Label>Company Size</Label>
                 <RadioGroup
                   value={formData.companySize}
-                  onValueChange={(value) =>
-                    updateFormData("companySize", value)
-                  }
+                  onValueChange={(value) => updateFormData('companySize', value)}
                   required
                 >
+                  {/* Radio options */}
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="1-10" id="1-10" />
                     <Label htmlFor="1-10">1-10 employees</Label>
@@ -146,13 +145,14 @@ export default function OnboardingWizard() {
             </div>
           )}
 
+          {/* Step 3: Role Selection */}
           {step === 3 && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="role">Your Role</Label>
                 <Select
                   value={formData.role}
-                  onValueChange={(value) => updateFormData("role", value)}
+                  onValueChange={(value) => updateFormData('role', value)}
                   required
                 >
                   <SelectTrigger id="role">
@@ -161,9 +161,7 @@ export default function OnboardingWizard() {
                   <SelectContent>
                     <SelectItem value="developer">Developer</SelectItem>
                     <SelectItem value="designer">Designer</SelectItem>
-                    <SelectItem value="product-manager">
-                      Product Manager
-                    </SelectItem>
+                    <SelectItem value="product-manager">Product Manager</SelectItem>
                     <SelectItem value="marketing">Marketing</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
@@ -172,6 +170,7 @@ export default function OnboardingWizard() {
             </div>
           )}
 
+          {/* Step 4: Summary */}
           {step === 4 && (
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Summary</h3>
@@ -185,12 +184,8 @@ export default function OnboardingWizard() {
                   <Separator />
                   <div className="space-y-2">
                     <h4 className="font-bold">Organization Details</h4>
-                    <p className="text-sm">
-                      Organization: {formData.organizationName}
-                    </p>
-                    <p className="text-sm">
-                      Company Size: {formData.companySize}
-                    </p>
+                    <p className="text-sm">Organization: {formData.organizationName}</p>
+                    <p className="text-sm">Company Size: {formData.companySize}</p>
                   </div>
                   <Separator />
                   <div className="space-y-2">
@@ -204,18 +199,14 @@ export default function OnboardingWizard() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={handlePrevious}
-          disabled={step === 1}
-        >
+        <Button variant="outline" onClick={handlePrevious} disabled={step === 1}>
           Previous
         </Button>
         {step < 4 ? (
           <Button onClick={handleNext}>Next</Button>
         ) : (
-          <Button type="submit" onClick={handleSubmit}>
-            Submit
+          <Button type="submit" onClick={handleSubmit} disabled={isPending}>
+            {isPending ? 'Submitting...' : 'Submit'}
           </Button>
         )}
       </CardFooter>
