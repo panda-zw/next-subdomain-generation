@@ -65,7 +65,7 @@ export default function OnboardingWizard() {
     startTransition(async () => {
       try {
         // Call the server action to create the organization
-        const { subdomain } = await createOrganization(formData);
+        const { subdomain } = await createOrganization(requestData);
 
         // Redirect to the success page on the new subdomain
         router.push(
