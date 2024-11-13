@@ -1,6 +1,5 @@
 "use server"
 
-
 export const createOrganization = async (values: any) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-organization/`, {
     method: "POST",
