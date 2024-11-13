@@ -20,7 +20,8 @@ const SuccessPage = () => {
           configured.
         </p>
       ) : (
-        <p>No subdomain detected.</p>
+        <p> Domain <strong>{window.location.hostname}</strong> is successfully
+          configured.</p>
       )}
     </div>
   );
