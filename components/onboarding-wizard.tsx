@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { createOrganization } from "@/actions/create-organization";
 import { generateSlug } from "@/lib/utils";
 
 export default function OnboardingWizard() {
@@ -60,20 +59,31 @@ export default function OnboardingWizard() {
     // Update the formData to include the subdomain
     const requestData = { ...formData, subdomain };
 
-    console.log("Form submitted:", formData);
-    // Use startTransition for Server Action to avoid blocking UI
+    console.log("Form submitted:", requestData);
     startTransition(async () => {
       try {
-        // Call the server action to create the organization
-        const { subdomain } = await createOrganization(requestData);
+        // Directly call the API
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-organization/`, {
+          method: "POST",
+          body: JSON.stringify(requestData),
+          headers: {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.log(response.statusText);
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
 
         // Redirect to the success page on the new subdomain
-        router.push(
-          `https://${subdomain}.${process.env.NEXT_PUBLIC_DOMAIN}/success`
-        );
+        router.push(`https://${data.subdomain}.${process.env.NEXT_PUBLIC_DOMAIN}/success`);
       } catch (error) {
         console.error("Error creating organization:", error);
-        // Handle the error (display message, etc.)
+        // Handle the error (e.g., display an error message to the user)
       }
     });
   };
@@ -95,7 +105,7 @@ export default function OnboardingWizard() {
                   id="first_name"
                   placeholder="John"
                   value={formData.first_name}
-                  onChange={(e) => updateFormData('first_name', e.target.value)}
+                  onChange={(e) => updateFormData("first_name", e.target.value)}
                   required
                 />
               </div>
@@ -105,7 +115,7 @@ export default function OnboardingWizard() {
                   id="last_name"
                   placeholder="Doe"
                   value={formData.last_name}
-                  onChange={(e) => updateFormData('last_name', e.target.value)}
+                  onChange={(e) => updateFormData("last_name", e.target.value)}
                   required
                 />
               </div>
@@ -116,7 +126,7 @@ export default function OnboardingWizard() {
                   type="email"
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => updateFormData('email', e.target.value)}
+                  onChange={(e) => updateFormData("email", e.target.value)}
                   required
                 />
               </div>
@@ -132,7 +142,7 @@ export default function OnboardingWizard() {
                   id="name"
                   placeholder="Acme Inc."
                   value={formData.name}
-                  onChange={(e) => updateFormData('name', e.target.value)}
+                  onChange={(e) => updateFormData("name", e.target.value)}
                   required
                 />
               </div>
@@ -140,10 +150,9 @@ export default function OnboardingWizard() {
                 <Label>Company Size</Label>
                 <RadioGroup
                   value={formData.companySize}
-                  onValueChange={(value) => updateFormData('companySize', value)}
+                  onValueChange={(value) => updateFormData("companySize", value)}
                   required
                 >
-                  {/* Radio options */}
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="1-10" id="1-10" />
                     <Label htmlFor="1-10">1-10 employees</Label>
@@ -172,7 +181,7 @@ export default function OnboardingWizard() {
                 <Label htmlFor="role">Your Role</Label>
                 <Select
                   value={formData.role}
-                  onValueChange={(value) => updateFormData('role', value)}
+                  onValueChange={(value) => updateFormData("role", value)}
                   required
                 >
                   <SelectTrigger id="role">
