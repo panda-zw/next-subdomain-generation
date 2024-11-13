@@ -28,7 +28,7 @@ const SuccessPage = () => {
           Domain <strong>{subdomain}.oono.store</strong> is successfully configured.
         </p>
       ) : (
-        <p>No subdomain detected.</p>
+        <p>No subdomain detected because of window.</p>
       )}
     </div>
   );
